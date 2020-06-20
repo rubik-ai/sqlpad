@@ -1,4 +1,5 @@
-//gist.github.com/developit/ecd64416d955874c3426d4582045533a
+// Unistore hooks taken from gist.github.com/developit/ecd64416d955874c3426d4582045533a
+// Only difference is react, and some lint ignore comments
 
 import {
   createContext,
