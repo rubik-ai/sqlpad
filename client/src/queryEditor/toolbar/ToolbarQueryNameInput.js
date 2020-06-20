@@ -1,7 +1,7 @@
 import React from 'react';
-import { connect } from 'unistore/react';
 import Input from '../../common/Input';
 import { setQueryState } from '../../stores/queries';
+import { useActions, useStoreState } from '../../stores/unistore-hooks';
 
 function mapStateToProps(state) {
   return {
@@ -10,11 +10,14 @@ function mapStateToProps(state) {
   };
 }
 
-const ConnectedToolbarQueryNameInput = connect(mapStateToProps, (store) => ({
+const actions = (store) => ({
   setQueryState,
-}))(React.memo(ToolbarQueryNameInput));
+});
 
-function ToolbarQueryNameInput({ queryName, setQueryState, showValidation }) {
+function ToolbarQueryNameInput() {
+  const { queryName, showValidation } = useStoreState(mapStateToProps);
+  const { setQueryState } = useActions(actions);
+
   const error = showValidation && !queryName.length;
 
   return (
@@ -28,4 +31,4 @@ function ToolbarQueryNameInput({ queryName, setQueryState, showValidation }) {
   );
 }
 
-export default ConnectedToolbarQueryNameInput;
+export default React.memo(ToolbarQueryNameInput);

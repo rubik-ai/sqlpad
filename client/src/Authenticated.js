@@ -1,11 +1,16 @@
 import React, { useEffect } from 'react';
 import { Redirect } from 'react-router-dom';
-import { connect } from 'unistore/react';
-import initApp from './stores/initApp';
-import useAppContext from './utilities/use-app-context';
 import useSWR from 'swr';
+import initApp from './stores/initApp';
+import { useActions, useStoreState } from './stores/unistore-hooks';
+import useAppContext from './utilities/use-app-context';
 
-function Authenticated({ children, initApp, initialized }) {
+const actions = { initApp };
+
+function Authenticated({ children }) {
+  const { initialized } = useStoreState('initialized');
+  const { initApp } = useActions(actions);
+
   const { config, currentUser } = useAppContext();
 
   let { data: connections } = useSWR('/api/connections');
@@ -31,6 +36,4 @@ function Authenticated({ children, initApp, initialized }) {
   return children;
 }
 
-export default connect(['initialized'], {
-  initApp,
-})(Authenticated);
+export default Authenticated;

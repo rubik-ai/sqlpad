@@ -2,13 +2,13 @@ import debounce from 'lodash/debounce';
 import PropTypes from 'prop-types';
 import React, { useEffect } from 'react';
 import SplitPane from 'react-split-pane';
-import { connect } from 'unistore/react';
 import AppHeader from '../app-header/AppHeader';
 import { resizeChart } from '../common/tauChartRef';
 import SchemaInfoLoader from '../schema/SchemaInfoLoader';
 import SchemaSidebar from '../schema/SchemaSidebar.js';
 import { connectConnectionClient } from '../stores/connections';
 import { loadQuery, resetNewQuery } from '../stores/queries';
+import { useActions, useStoreState } from '../stores/unistore-hooks';
 import useSchemaState from '../stores/use-schema-state';
 import DocumentTitle from './DocumentTitle';
 import QueryEditorChart from './QueryEditorChart';
@@ -22,14 +22,28 @@ import UnsavedQuerySelector from './UnsavedQuerySelector';
 
 const deboucedResearchChart = debounce(resizeChart, 700);
 
-function QueryEditor(props) {
-  const {
-    connectConnectionClient,
-    loadQuery,
-    queryId,
-    resetNewQuery,
+function mapStateToProps(state) {
+  const showVis =
+    state.query && state.query.chart && Boolean(state.query.chart.chartType);
+
+  return {
     showVis,
-  } = props;
+  };
+}
+
+const actions = (store) => ({
+  connectConnectionClient: connectConnectionClient(store),
+  loadQuery,
+  resetNewQuery,
+});
+
+function QueryEditor(props) {
+  const { queryId } = props;
+
+  const { connectConnectionClient, loadQuery, resetNewQuery } = useActions(
+    actions
+  );
+  const { showVis } = useStoreState(mapStateToProps);
 
   // Once initialized reset or load query on changes accordingly
   useEffect(() => {
@@ -128,23 +142,7 @@ function QueryEditor(props) {
 }
 
 QueryEditor.propTypes = {
-  loadQuery: PropTypes.func.isRequired,
   queryId: PropTypes.string.isRequired,
-  resetNewQuery: PropTypes.func.isRequired,
-  showVis: PropTypes.bool,
 };
 
-function mapStateToProps(state, props) {
-  const showVis =
-    state.query && state.query.chart && Boolean(state.query.chart.chartType);
-
-  return {
-    showVis,
-  };
-}
-
-export default connect(mapStateToProps, (store) => ({
-  connectConnectionClient: connectConnectionClient(store),
-  loadQuery,
-  resetNewQuery,
-}))(QueryEditor);
+export default QueryEditor;

@@ -1,20 +1,27 @@
 import DownloadIcon from 'mdi-react/DownloadIcon';
 import OpenInNewIcon from 'mdi-react/OpenInNewIcon';
-import PropTypes from 'prop-types';
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { connect } from 'unistore/react';
 import IncompleteDataNotification from '../common/IncompleteDataNotification';
 import SecondsTimer from '../common/SecondsTimer.js';
-import styles from './QueryResultHeader.module.css';
+import { useStoreState } from '../stores/unistore-hooks';
 import useAppContext from '../utilities/use-app-context';
+import styles from './QueryResultHeader.module.css';
 
-function QueryResultHeader({
-  isRunning,
-  queryId,
-  queryResult,
-  runQueryStartTime,
-}) {
+function mapStateToProps(state) {
+  const { isRunning, queryResult, runQueryStartTime } = state;
+  return {
+    isRunning,
+    queryId: state.query && state.query.id,
+    queryResult,
+    runQueryStartTime,
+  };
+}
+function QueryResultHeader() {
+  const { isRunning, queryId, queryResult, runQueryStartTime } = useStoreState(
+    mapStateToProps
+  );
+
   const { config } = useAppContext();
   if (isRunning || !queryResult) {
     return (
@@ -93,24 +100,4 @@ function QueryResultHeader({
   );
 }
 
-QueryResultHeader.propTypes = {
-  isRunning: PropTypes.bool,
-  queryResult: PropTypes.object,
-  runQueryStartTime: PropTypes.instanceOf(Date),
-};
-
-QueryResultHeader.defaultProps = {
-  isRunning: false,
-};
-
-function mapStateToProps(state) {
-  const { isRunning, queryResult, runQueryStartTime } = state;
-  return {
-    isRunning,
-    queryId: state.query && state.query.id,
-    queryResult,
-    runQueryStartTime,
-  };
-}
-
-export default connect(mapStateToProps)(React.memo(QueryResultHeader));
+export default React.memo(QueryResultHeader);

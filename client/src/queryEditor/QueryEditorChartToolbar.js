@@ -1,9 +1,9 @@
 import DownloadIcon from 'mdi-react/DownloadIcon';
 import OpenInNewIcon from 'mdi-react/OpenInNewIcon';
 import React from 'react';
-import { connect } from 'unistore/react';
 import IconButton from '../common/IconButton';
 import { exportPng } from '../common/tauChartRef';
+import { useStoreState } from '../stores/unistore-hooks';
 
 function mapStateToProps(state) {
   return {
@@ -13,14 +13,9 @@ function mapStateToProps(state) {
   };
 }
 
-const Connected = connect(mapStateToProps)(QueryEditorChartToolbar);
+function QueryEditorChartToolbar({ children }) {
+  const { queryId, queryName, queryResult } = useStoreState(mapStateToProps);
 
-function QueryEditorChartToolbar({
-  queryResult,
-  queryId,
-  queryName,
-  children,
-}) {
   const downloadEnabled =
     queryResult && queryResult.rows && queryResult.rows.length;
 
@@ -65,4 +60,4 @@ function QueryEditorChartToolbar({
   );
 }
 
-export default Connected;
+export default QueryEditorChartToolbar;

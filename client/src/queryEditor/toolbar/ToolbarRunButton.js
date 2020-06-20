@@ -1,9 +1,8 @@
-import PropTypes from 'prop-types';
 import React from 'react';
-import { connect } from 'unistore/react';
 import Button from '../../common/Button';
 import { connectConnectionClient } from '../../stores/connections';
 import { runQuery } from '../../stores/queries';
+import { useActions, useStoreState } from '../../stores/unistore-hooks';
 
 function mapStateToProps(state) {
   const { isRunning } = state;
@@ -12,12 +11,14 @@ function mapStateToProps(state) {
   };
 }
 
-const ConnectedToolbarRunButton = connect(mapStateToProps, (store) => ({
+const actions = (store) => ({
   connectConnectionClient: connectConnectionClient(store),
   runQuery: runQuery(store),
-}))(React.memo(ToolbarRunButton));
+});
 
-function ToolbarRunButton({ isRunning, connectConnectionClient, runQuery }) {
+function ToolbarRunButton() {
+  const { isRunning } = useStoreState(mapStateToProps);
+  const { connectConnectionClient, runQuery } = useActions(actions);
   return (
     <Button
       variant="primary"
@@ -32,9 +33,4 @@ function ToolbarRunButton({ isRunning, connectConnectionClient, runQuery }) {
   );
 }
 
-ToolbarRunButton.propTypes = {
-  isRunning: PropTypes.bool.isRequired,
-  runQuery: PropTypes.func.isRequired,
-};
-
-export default ConnectedToolbarRunButton;
+export default React.memo(ToolbarRunButton);

@@ -1,8 +1,8 @@
 import { useEffect } from 'react';
-import { connect } from 'unistore/react';
+import { useStoreState } from '../stores/unistore-hooks';
 import useSchemaState from '../stores/use-schema-state';
 
-function mapStateToProps(state, props) {
+function mapStateToProps(state) {
   return {
     connectionId: state.selectedConnectionId,
   };
@@ -15,7 +15,8 @@ function mapStateToProps(state, props) {
  * because sidebar could be hidden and this is an application-level need
  * @param {*} props
  */
-function SchemaInfoLoader({ connectionId }) {
+function SchemaInfoLoader() {
+  const { connectionId } = useStoreState(mapStateToProps);
   const { loadSchemaInfo } = useSchemaState();
 
   useEffect(() => {
@@ -27,4 +28,4 @@ function SchemaInfoLoader({ connectionId }) {
   return null;
 }
 
-export default connect(mapStateToProps)(SchemaInfoLoader);
+export default SchemaInfoLoader;

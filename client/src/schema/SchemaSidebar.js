@@ -4,30 +4,31 @@ import RefreshIcon from 'mdi-react/RefreshIcon';
 import React, { useState } from 'react';
 import Measure from 'react-measure';
 import { FixedSizeList as List } from 'react-window';
-import { connect } from 'unistore/react';
 import Divider from '../common/Divider';
+import ErrorBlock from '../common/ErrorBlock';
 import IconButton from '../common/IconButton';
 import Input from '../common/Input';
 import Sidebar from '../common/Sidebar';
 import SpinKitCube from '../common/SpinKitCube';
 import Text from '../common/Text';
+import Tooltip from '../common/Tooltip';
+import { useStoreState } from '../stores/unistore-hooks';
 import useSchemaState from '../stores/use-schema-state';
 import getSchemaList from './getSchemaList';
 import styles from './SchemaSidebar.module.css';
 import searchSchemaInfo from './searchSchemaInfo';
-import ErrorBlock from '../common/ErrorBlock';
-import Tooltip from '../common/Tooltip';
 
 const ICON_SIZE = 22;
 const ICON_STYLE = { marginBottom: -6, marginRight: -6, marginLeft: -4 };
 
-function mapStateToProps(state, props) {
+function mapStateToProps(state) {
   return {
     connectionId: state.selectedConnectionId,
   };
 }
 
-function SchemaSidebar({ connectionId }) {
+function SchemaSidebar() {
+  const { connectionId } = useStoreState(mapStateToProps);
   const [search, setSearch] = useState('');
   const [dimensions, setDimensions] = useState({
     width: -1,
@@ -192,4 +193,4 @@ function SchemaSidebar({ connectionId }) {
   );
 }
 
-export default connect(mapStateToProps)(React.memo(SchemaSidebar));
+export default React.memo(SchemaSidebar);

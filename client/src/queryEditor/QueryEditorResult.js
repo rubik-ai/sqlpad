@@ -1,10 +1,10 @@
-import { connect } from 'unistore/react';
+import React from 'react';
 import QueryResultDataTable from '../common/QueryResultContainer.js';
+import { useStoreState } from '../stores/unistore-hooks';
 
-const ConnectedQueryEditorResult = connect([
-  'isRunning',
-  'queryError',
-  'queryResult',
-])(QueryResultDataTable);
+function ConnectedQueryEditorResult(props) {
+  const state = useStoreState(['isRunning', 'queryError', 'queryResult']);
+  return <QueryResultDataTable {...props} {...state} />;
+}
 
 export default ConnectedQueryEditorResult;

@@ -1,12 +1,5 @@
 import { useEffect } from 'react';
-import { connect } from 'unistore/react';
-
-function mapStateToProps(state, props) {
-  const queryName = state.query && state.query.name;
-  return {
-    title: props.queryId === 'new' ? 'New query' : queryName,
-  };
-}
+import { useStoreState } from '../stores/unistore-hooks';
 
 /**
  * This component isolates the work of updating the document title on query name changes.
@@ -14,7 +7,14 @@ function mapStateToProps(state, props) {
  * Once unistore has a hooks interface this can become a custom hook
  * @param {object} props
  */
-function DocumentTitle({ title }) {
+function DocumentTitle({ queryId }) {
+  const { title } = useStoreState((state) => {
+    const queryName = state.query && state.query.name;
+    return {
+      title: queryId === 'new' ? 'New query' : queryName,
+    };
+  });
+
   useEffect(() => {
     document.title = title;
   }, [title]);
@@ -22,4 +22,4 @@ function DocumentTitle({ title }) {
   return null;
 }
 
-export default connect(mapStateToProps)(DocumentTitle);
+export default DocumentTitle;

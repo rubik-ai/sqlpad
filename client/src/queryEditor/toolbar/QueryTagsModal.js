@@ -1,9 +1,9 @@
 import React from 'react';
 import useSWR from 'swr';
-import { connect } from 'unistore/react';
 import Modal from '../../common/Modal';
 import MultiSelect from '../../common/MultiSelect';
 import { setQueryState } from '../../stores/queries';
+import { useActions, useStoreState } from '../../stores/unistore-hooks';
 
 function mapStateToProps(state) {
   return {
@@ -11,11 +11,12 @@ function mapStateToProps(state) {
   };
 }
 
-const ConnectedQueryTagsModal = connect(mapStateToProps, { setQueryState })(
-  React.memo(QueryTagsModal)
-);
+const actions = { setQueryState };
 
-function QueryTagsModal({ tags, visible, onClose, setQueryState }) {
+function QueryTagsModal({ visible, onClose }) {
+  const { setQueryState } = useActions(actions);
+  const { tags } = useStoreState(mapStateToProps);
+
   const { data: tagsData } = useSWR(visible ? '/api/tags' : null);
   const options = (tagsData || []).map((tag) => ({ name: tag, id: tag }));
   const selectedItems = tags.map((tag) => ({ name: tag, id: tag }));
@@ -43,4 +44,4 @@ function QueryTagsModal({ tags, visible, onClose, setQueryState }) {
   );
 }
 
-export default ConnectedQueryTagsModal;
+export default React.memo(QueryTagsModal);

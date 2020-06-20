@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import useSWR from 'swr';
-import { connect } from 'unistore/react';
 import Select from '../common/Select';
 import ConnectionEditDrawer from '../connections/ConnectionEditDrawer';
 import ConnectionListDrawer from '../connections/ConnectionListDrawer';
@@ -8,14 +7,19 @@ import {
   connectConnectionClient,
   selectConnectionId,
 } from '../stores/connections';
+import { useActions, useStoreState } from '../stores/unistore-hooks';
 import useAppContext from '../utilities/use-app-context';
 import styles from './ConnectionDropdown.module.css';
 
-function ConnectionDropdown({
-  connectConnectionClient,
+const actions = (store) => ({
+  connectConnectionClient: connectConnectionClient(store),
   selectConnectionId,
-  selectedConnectionId,
-}) {
+});
+
+function ConnectionDropdown() {
+  const { selectConnectionId, connectConnectionClient } = useActions(actions);
+  const { selectedConnectionId } = useStoreState('selectedConnectionId');
+
   const { currentUser } = useAppContext();
   const [showEdit, setShowEdit] = useState(false);
   const [showConnections, setShowConnections] = useState(false);
@@ -90,7 +94,4 @@ function ConnectionDropdown({
   );
 }
 
-export default connect(['selectedConnectionId'], (store) => ({
-  connectConnectionClient: connectConnectionClient(store),
-  selectConnectionId,
-}))(ConnectionDropdown);
+export default ConnectionDropdown;

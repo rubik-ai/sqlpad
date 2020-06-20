@@ -1,9 +1,9 @@
-import SharedIcon from 'mdi-react/AccountMultipleIcon';
 import PrivateIcon from 'mdi-react/AccountIcon';
+import SharedIcon from 'mdi-react/AccountMultipleIcon';
 import React from 'react';
-import { connect } from 'unistore/react';
 import IconButton from '../../common/IconButton';
 import { setQueryState } from '../../stores/queries';
+import { useActions, useStoreState } from '../../stores/unistore-hooks';
 
 function mapStateToProps(state) {
   const acl = state.query.acl || [];
@@ -11,12 +11,14 @@ function mapStateToProps(state) {
     shared: acl.length > 0,
   };
 }
-
-const ConnectedToolbarShareQueryButton = connect(mapStateToProps, (store) => ({
+const actions = (store) => ({
   setQueryState,
-}))(React.memo(ToolbarShareQueryButton));
+});
 
-function ToolbarShareQueryButton({ shared, setQueryState }) {
+function ToolbarShareQueryButton() {
+  const { shared } = useStoreState(mapStateToProps);
+  const { setQueryState } = useActions(actions);
+
   function handleClick() {
     setQueryState(
       'acl',
@@ -34,4 +36,4 @@ function ToolbarShareQueryButton({ shared, setQueryState }) {
   );
 }
 
-export default ConnectedToolbarShareQueryButton;
+export default React.memo(ToolbarShareQueryButton);

@@ -1,19 +1,23 @@
 import React, { useCallback } from 'react';
-import { connect } from 'unistore/react';
-import { setQueryState, handleQuerySelectionChange } from '../stores/queries';
 import SqlEditor from '../common/SqlEditor';
+import { handleQuerySelectionChange, setQueryState } from '../stores/queries';
+import { useActions, useStoreState } from '../stores/unistore-hooks';
 
-function mapStateToProps(state, props) {
+function mapStateToProps(state) {
   return {
     value: state.query && state.query.queryText,
   };
 }
 
-function QueryEditorSqlEditor({
-  value,
+const actions = {
   setQueryState,
   handleQuerySelectionChange,
-}) {
+};
+
+function QueryEditorSqlEditor() {
+  const { setQueryState, handleQuerySelectionChange } = useActions(actions);
+  const { value } = useStoreState(mapStateToProps);
+
   const onChange = useCallback((value) => setQueryState('queryText', value), [
     setQueryState,
   ]);
@@ -29,9 +33,4 @@ function QueryEditorSqlEditor({
   );
 }
 
-const ConnectedQueryEditorSqlEditor = connect(mapStateToProps, {
-  setQueryState,
-  handleQuerySelectionChange,
-})(QueryEditorSqlEditor);
-
-export default ConnectedQueryEditorSqlEditor;
+export default QueryEditorSqlEditor;

@@ -1,15 +1,24 @@
 import keymaster from 'keymaster';
 import { useEffect } from 'react';
-import { connect } from 'unistore/react';
 import { connectConnectionClient } from '../stores/connections';
 import { formatQuery, runQuery, saveQuery } from '../stores/queries';
+import { useActions } from '../stores/unistore-hooks';
 
-function Shortcuts({
-  connectConnectionClient,
+const actions = (store) => ({
+  connectConnectionClient: connectConnectionClient(store),
   formatQuery,
-  runQuery,
-  saveQuery,
-}) {
+  runQuery: runQuery(store),
+  saveQuery: saveQuery(store),
+});
+
+function Shortcuts() {
+  const {
+    connectConnectionClient,
+    formatQuery,
+    runQuery,
+    saveQuery,
+  } = useActions(actions);
+
   useEffect(() => {
     // keymaster doesn't fire on input/textarea events by default
     // since we are only using command/ctrl shortcuts,
@@ -38,9 +47,4 @@ function Shortcuts({
   return null;
 }
 
-export default connect(null, (store) => ({
-  connectConnectionClient: connectConnectionClient(store),
-  formatQuery,
-  runQuery: runQuery(store),
-  saveQuery: saveQuery(store),
-}))(Shortcuts);
+export default Shortcuts;

@@ -1,10 +1,9 @@
 import UnsavedIcon from 'mdi-react/ContentSaveEditIcon';
 import SaveIcon from 'mdi-react/ContentSaveIcon';
-import PropTypes from 'prop-types';
 import React from 'react';
-import { connect } from 'unistore/react';
 import IconButton from '../../common/IconButton';
 import { saveQuery } from '../../stores/queries';
+import { useActions, useStoreState } from '../../stores/unistore-hooks';
 
 function mapStateToProps(state) {
   return {
@@ -13,11 +12,12 @@ function mapStateToProps(state) {
   };
 }
 
-const ConnectedToolbarSaveButton = connect(mapStateToProps, (store) => ({
+const actions = (store) => ({
   saveQuery: saveQuery(store),
-}))(React.memo(ToolbarSaveButton));
-
-function ToolbarSaveButton({ isSaving, saveQuery, unsavedChanges }) {
+});
+function ToolbarSaveButton() {
+  const { isSaving, unsavedChanges } = useStoreState(mapStateToProps);
+  const { saveQuery } = useActions(actions);
   return (
     <IconButton tooltip="Save" onClick={() => saveQuery()} disabled={isSaving}>
       {unsavedChanges ? <UnsavedIcon /> : <SaveIcon />}
@@ -25,10 +25,4 @@ function ToolbarSaveButton({ isSaving, saveQuery, unsavedChanges }) {
   );
 }
 
-ToolbarSaveButton.propTypes = {
-  isSaving: PropTypes.bool.isRequired,
-  saveQuery: PropTypes.func.isRequired,
-  unsavedChanges: PropTypes.bool.isRequired,
-};
-
-export default ConnectedToolbarSaveButton;
+export default React.memo(ToolbarSaveButton);

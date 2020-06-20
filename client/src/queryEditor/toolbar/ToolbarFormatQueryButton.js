@@ -1,18 +1,15 @@
 import FormatIcon from 'mdi-react/FormatAlignLeftIcon';
 import React from 'react';
-import { connect } from 'unistore/react';
 import IconButton from '../../common/IconButton';
 import { formatQuery } from '../../stores/queries';
+import { useActions } from '../../stores/unistore-hooks';
 
-function mapStateToProps(state) {
-  return {};
-}
-
-const ConnectedToolbarFormatQueryButton = connect(mapStateToProps, (store) => ({
+const actions = (store) => ({
   formatQuery,
-}))(React.memo(ToolbarFormatQueryButton));
+});
 
-function ToolbarFormatQueryButton({ formatQuery }) {
+function ToolbarFormatQueryButton() {
+  const { formatQuery } = useActions(actions);
   return (
     <IconButton tooltip="Format" onClick={formatQuery}>
       <FormatIcon />
@@ -20,4 +17,4 @@ function ToolbarFormatQueryButton({ formatQuery }) {
   );
 }
 
-export default ConnectedToolbarFormatQueryButton;
+export default React.memo(ToolbarFormatQueryButton);
