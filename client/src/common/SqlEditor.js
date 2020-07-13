@@ -41,6 +41,10 @@ function SqlEditor({ onChange, readOnly, value, onSelectionChange }) {
 
   const { width, height } = dimensions;
 
+  const highlightActiveLine = true;
+  const showGutter = true;
+  const showPrintMargin = true;
+
   const setOptions = {
     useWorker: true,
     enableBasicAutocompletion: true,
@@ -61,7 +65,7 @@ function SqlEditor({ onChange, readOnly, value, onSelectionChange }) {
             editorProps={{ $blockScrolling: Infinity }}
             focus={!readOnly}
             height={height + 'px'}
-            highlightActiveLine={false}
+            highlightActiveLine={highlightActiveLine}
             mode="sql"
             name="query-ace-editor"
             onChange={onChange || noop}
@@ -69,8 +73,8 @@ function SqlEditor({ onChange, readOnly, value, onSelectionChange }) {
             onSelectionChange={handleSelection}
             readOnly={readOnly}
             setOptions={setOptions}
-            showGutter={false}
-            showPrintMargin={false}
+            showGutter={showGutter}
+            showPrintMargin={showPrintMargin}
             theme="sqlserver"
             value={value}
             width={width + 'px'}

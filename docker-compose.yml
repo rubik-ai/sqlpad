@@ -1,0 +1,50 @@
+version: "3"
+
+services:
+
+  postgresql:
+    container_name: postgresql
+    networks: ["vnet"]
+    image: rubiklabs/agensgraph:2.1.2.6-d2
+    ports:
+      - "5432:5432"
+
+  sqlpad:
+    # To use Dockerfile at root of this project, use build instead of image
+    # build: ../../
+    image: rubiklabs/sqlpad:3
+    hostname: 'sqlpad'
+    networks: ["vnet"]
+    restart: always
+    ports:
+      - '3000:3000'
+    environment:
+      SQLPAD_ALLOW_CSV_DOWNLOAD: 'false'
+      SQLPAD_COOKIE_NAME: 'dataos.explore'
+      SQLPAD_AUTH_DISABLED: 'true'
+      SQLPAD_BACKEND_DB_URI: 'postgres://sqlpad:sqlpad@postgresql:5432/sqlpad?'
+      SQLPAD_AUTH_DISABLED_DEFAULT_ROLE: 'editor'
+#     PUBLIC_URL: 'http://192.168.1.134:3000/explore'
+      SQLPAD_BASE_URL: '/explore'
+      SQLPAD_ADMIN: 'admin@sqlpad.com'
+      SQLPAD_ADMIN_PASSWORD: 'admin'
+      SQLPAD_APP_LOG_LEVEL: info
+      SQLPAD_WEB_LOG_LEVEL: warn
+      SQLPAD_CONNECTIONS__presto__name: Presto
+      SQLPAD_CONNECTIONS__presto__driver: presto
+      SQLPAD_CONNECTIONS__presto__host: presto-coordinator
+      SQLPAD_CONNECTIONS__presto__port: 8080
+      SQLPAD_CONNECTIONS__presto__prestoCatalog: hive
+      SQLPAD_CONNECTIONS__presto__prestoSchema: dataos
+      SQLPAD_CONNECTIONS__pg__name: Postgres
+      SQLPAD_CONNECTIONS__pg__driver: postgres
+      SQLPAD_CONNECTIONS__pg__host: postgresql
+      SQLPAD_CONNECTIONS__pg__port: 5432
+      SQLPAD_CONNECTIONS__pg__database: sqlpad
+      SQLPAD_CONNECTIONS__pg__username: sqlpad
+      SQLPAD_CONNECTIONS__pg__password: sqlpad
+
+networks:
+  vnet:
+    external:
+      name: vnet
